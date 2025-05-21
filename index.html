@@ -1,11 +1,194 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Quiz del Meteo</title>
+    <style>
+        /*  stili di base per il corpo del documento*/
+        body 
+        {
+            font-family: Arial, sans-serif;
+            /* Front utilizzato per il testo*/
+            background-color: #f0f8ff;
+            /* Colore di sfondo */
+            text-align: center;
+            /* Allinea al centro il testo*/
+            padding: 20px;
+            /* Spaziatura interna*/
+        }
+        .question 
+        {
+            font-size: 1.5em;
+            /* dimensione del front per le domande*/
+            margin: 20px 0;
+            /*mardine sotto e sopra le domande*/
+        }
+        .options 
+        {
+            margin: 10px 0;
+            /* Margine sopra e sotto le domande*/ 
+        }
+        button 
+        {
+            margin: 5px;
+            /* margine per i pulsanti*/ 
+            padding: 10px 20px;
+            /*spaziatura interna per i pusanti*/
+            font-size: 1em; /*Dimensione del front per i pulsanti*/
+            cursor: pointer; /*Cambia il cursore quando si passa sopra ad un pulsante*/
+            
+        }
+        #result-top
+        {
+            font-size: 1.2em;
+            /* Dimensione del front del risultato fianle*/
+            margin-top: 20px;
+            /* margine sopra al risultato finale */ 
+            
+        }
+
+        #div-button
+        {
+            margin: 0;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+           
+        }
+        
+    </style>
 </head>
 <body>
-    <h1>Titolo del sito</h1>
+
+    <h1>Quiz del Meteo</h1> <!-- Titolo del quiz -->
+    <div id="quiz-container">
+        <!-- contenitore principale per il quiz -->
+        <div class="question" id="question"></div>
+        <!--Sezione per la domanda-->
+        <div class="options" id="options"></div>
+        <!--Sezione per le opzioni di risposta -->
+        
     
+
+        <div id ="div-button">
+
+            <button class = "center-button" id="next-button" style="display: none; margin-left: screen / 2;">Prossima Domanda</button>
+            <!--Pulsante per passare alla prossima domanda-->
+        
+
+        </div>
+        <div id = "result-top">
+
+            <div id="result"></div>
+        </div>
+        
+
+
+
+
+    </div>
+    <div id="final-result" style="display: none; font-weight: bold; margin-top: 20px; font-size: 1.3em;"></div>
+
+    
+    <!--Sezione per mostrare il risultato-->
+
+    <script>
+        //Array di ogetti che contiene le domande, le opzioni e larisposta corretta
+        const questions = [
+            {
+                question: "Il gas principale responsabile dell'effetto serra è:",
+                options: ["Ossigeno", "Anidride carbonica", "Azoto", "Idrogeno"],
+                answer: 1 //indice della risposta corretta.
+            },
+            {
+                question: "La temperatura di congelamento dell'acqua è:",
+                options: ["0°C", "100°C", "32°F", "212°F"],
+                answer: 0
+            },
+            {
+                question: "Il fenomeno meteorologico che è caratterizzato da forti venti e piogge è:",
+                options: ["Tornado", "Siccità", "Nebbia", "Sereno"],
+                answer: 0
+            },
+            {
+                question: "I venti che affluiscono da nord sulle nostre regioni sono secchi in quanto:",
+                options: ["Sono venti caldi", "Devono oltrepassare le montagne", "Arrivano da zone in cui l'umidità è molto bassa", "Sono venti freddi"],
+                answer: 2
+            },
+            {
+                question: "Generalmente, la temperatura minima della giornata si registra:",
+                options: ["Intorno all'alba", "Intorno al tramonto", "Intorno a mezzogiorno", "Intorno a mezzanotte"],
+                answer: 0
+            },
+            {
+                question: "Quale di queste affermazioni sull'aria non è corretta?",
+                options: ["Lo spostamento dell'aria si chiama vento", "L'aria è riscaldata direttamente dai raggi del Sole", "L'aria è una miscela di gas", "Il peso dell'aria si esercita allo stesso modo in tutte le direzioni"],
+                answer: 1
+
+            }
+
+        ];
+
+        let currentQuestionIndex = 0; // l'indice della domanda corrente
+        let score = 0; // punteggio del utente
+        //funzione per caricare la domanda corrente 
+        function loadQuestion() 
+        {
+            const currentQuestion = questions[currentQuestionIndex]; // ottiene la domanda corrente
+            document.getElementById("question").innerText = currentQuestion.question; // mostra la domanda, permette di visualizzare la domanda sulla pagina
+            const optionsContainer = document.getElementById("options");//contenitore di opzioni
+            optionsContainer.innerHTML = ""; // pulisce le opzioni preccendeti
+            //crea un pulsante per ogni opzione 
+            currentQuestion.options.forEach((option, index) => 
+            {
+                const button = document.createElement("button"); // crea un nuovo pulsante
+                button.innerText = option;//imposta il testo del pulsante
+                button.onclick = () => checkAnswer(index);//Aggiunge un gestore di eventi ad ogni clic
+                optionsContainer.appendChild(button);//Aggiunge il pulsante al contenitore delle opzioni
+            });
+        }
+        //funzione per controllare la risposta
+        function checkAnswer(selectedIndex) 
+        {
+            const currentQuestion = questions[currentQuestionIndex];//Ottiene la domanda corrente
+            if (selectedIndex === currentQuestion.answer) //controlla che la risposta è corretta
+            {
+                score++;//incrementa il punteggio se la risposta è corretta 
+            }
+            document.getElementById("next-button").style.display = "block";//mostra il pulsante per passare alla prossima domanda 
+            const result = document.getElementById("result"); //sezione per il risultato
+            result.innerText = `Hai risposto ${selectedIndex === currentQuestion.answer ? "correttamente" : "sbagliato"}.`; //mostra un messaggio che indica se la risposta è corretta o sbagliata
+        }
+        //Aggiunge un gestore di eventi al pulsante "Prossima Domanda"
+        document.getElementById("next-button").onclick = () => 
+        {
+            currentQuestionIndex++;//incementa l'indice della domanda corrente
+            if (currentQuestionIndex < questions.length) //carica la prossima domanda
+            {
+                loadQuestion();//Carica la prossima domanda
+                document.getElementById("next-button").style.display = "none";//Nasconde il pulsante 
+                document.getElementById("result").innerText = "";//Pulisce il preccedente messaggio del risultato
+            } 
+            else //Se non ci sono più domande, nasconde il contenitore del quiz 
+            {
+                // Nascondi il contenitore del quiz
+                document.getElementById("quiz-container").style.display = "none";
+
+                // Mostra il risultato finale
+                const finalResultDiv = document.getElementById("final-result");
+                finalResultDiv.innerText = `Hai completato il quiz! Il tuo punteggio è ${score} di ${questions.length}.`;
+                finalResultDiv.style.display = "block"; // Rende visibile il risultato finale
+            }
+        };
+        //Carica la prima domanda al avvio del quiz
+        loadQuestion();
+    </script>
+
 </body>
 </html>
+
